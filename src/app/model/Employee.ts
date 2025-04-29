@@ -1,8 +1,8 @@
 export interface Employee {
-    id?: number;
+    id: number;
     name: string;
     email: string;
-    departmentId: number;
+    department?: string;
     createdAt?: string;
     updatedAt?: string;
   }

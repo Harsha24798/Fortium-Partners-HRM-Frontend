@@ -1,38 +1,80 @@
-<div class="flex flex-1  flex-col md:flex-row lg:flex-row mx-2">
-    <div class="mb-2 border-solid border-gray-300 rounded border shadow-sm w-full">
-        <div class="bg-gray-200 px-2 py-3 border-solid border-gray-200 border-b">
-            Employee Table
-        </div>
-        <div class="p-3">
-            <table class="table-responsive w-full rounded">
-                <thead>
-                  <tr>
-                    <th class="border w-1/4 px-4 py-2">Employee Name</th>
-                    <th class="border w-1/6 px-4 py-2">Email</th>
-                    <th class="border w-1/6 px-4 py-2">Department</th>
-                    <!-- <th class="border w-1/7 px-4 py-2">Status</th> -->
-                    <th class="border w-1/5 px-4 py-2">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let employee of empleeList">
-                        <td class="border px-4 py-2">{{employee.id}}</td>
-                        <td class="border px-4 py-2">{{employee.name}}</td>
-                        <td class="border px-4 py-2">{{employee.email}}</td>
-
-                        <!-- <td class="border px-4 py-2"> <i class="fas fa-check text-green-500 mx-2"></i> </td> -->
-                        <td class="border px-4 py-2" > 
-                            <a class="bg-teal-300 cursor-pointer rounded p-1 mx-1 text-white">
-                                    <i class="fas fa-eye"></i></a>
-                            <a class="bg-teal-300 cursor-pointer rounded p-1 mx-1 text-white">
-                                    <i class="fas fa-edit"></i></a>
-                            <a class="bg-teal-300 cursor-pointer rounded p-1 mx-1 text-red-500">
-                                    <i class="fas fa-trash"></i>
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+<div class="flex flex-1 flex-col md:flex-row lg:flex-row mx-2">
+  <div class="mb-4 w-full border border-gray-300 shadow rounded">
+    <div class="bg-gray-100 px-4 py-3 text-lg font-semibold text-gray-700 border-b">
+      Employee Table
     </div>
+    <div class="overflow-x-auto p-4">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Employee ID</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Employee Name</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Department</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr *ngFor="let employee of employeeList" class="hover:bg-gray-100 transition-colors">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ employee.id }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ employee.name }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ employee.email }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{{ employee.department || '-' }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+              <button class="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded mx-1" (click)="openModal('view', employee)">
+                <i class="fas fa-eye"></i>
+              </button>
+              <button class="bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded mx-1" (click)="openModal('edit', employee)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded mx-1" (click)="openModal('delete', employee)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Reusable Modal -->
+<div *ngIf="modalType" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-all duration-300 ease-in-out">
+  <div class="bg-white rounded-xl shadow-2xl w-96 p-8 relative transform transition-all duration-300 ease-in-out">
+    
+    <!-- Close Button -->
+    <button (click)="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl font-semibold transition-all duration-200">
+      ✕
+    </button>
+  
+    <ng-container [ngSwitch]="modalType">
+  
+      <!-- View Modal -->
+      <div *ngSwitchCase="'view'">
+        <h2 class="text-2xl font-semibold mb-6 text-gray-800">Employee Details</h2>
+        <p class="text-lg mb-2 text-gray-600"><strong class="text-gray-800">ID:</strong> {{selectedEmployee?.id}}</p>
+        <p class="text-lg mb-2 text-gray-600"><strong class="text-gray-800">Name:</strong> {{selectedEmployee?.name}}</p>
+        <p class="text-lg mb-2 text-gray-600"><strong class="text-gray-800">Email:</strong> {{selectedEmployee?.email}}</p>
+        <p class="text-lg text-gray-600"><strong class="text-gray-800">Department:</strong> {{selectedEmployee?.department}}</p>
+      </div>
+  
+      <!-- Edit Modal -->
+      <div *ngSwitchCase="'edit'">
+        <h2 class="text-2xl font-semibold mb-6 text-gray-800">Edit Employee</h2>
+        <input [value]="selectedEmployee?.name" class="w-full mb-4 border-2 border-gray-300 rounded-lg p-4 text-lg text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200" placeholder="Name" />
+        <input [value]="selectedEmployee?.email" class="w-full mb-4 border-2 border-gray-300 rounded-lg p-4 text-lg text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200" placeholder="Email" />
+        <input [value]="selectedEmployee?.department" class="w-full mb-6 border-2 border-gray-300 rounded-lg p-4 text-lg text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all duration-200" placeholder="Department" />
+        <button class="bg-blue-600 text-white px-6 py-3 rounded-lg w-full mt-4 hover:bg-blue-700 focus:ring-2 focus:ring-blue-300 transition duration-200" (click)="saveEdit()">Save</button>
+      </div>
+  
+      <!-- Delete Modal -->
+      <div *ngSwitchCase="'delete'">
+        <h2 class="text-2xl font-semibold mb-6 text-red-600">Confirm Delete</h2>
+        <p class="text-lg text-gray-600">Are you sure you want to delete <strong>{{ selectedEmployee?.name }}</strong>?</p>
+        <button class="bg-red-600 text-white px-6 py-3 rounded-lg w-full mt-4 hover:bg-red-700 focus:ring-2 focus:ring-red-300 transition duration-200" (click)="confirmDelete(selectedEmployee?.id!)">Delete</button>
+      </div>
+  
+    </ng-container>
+  </div>
 </div>

@@ -1,47 +1,116 @@
-<main class="bg-white-300 flex-1 p-3 overflow-hidden">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
 
-    <div class="flex flex-col">
-        <!-- Stats Row Starts Here -->
-        <div class="flex flex-1 flex-col md:flex-row lg:flex-row mx-2">
-            <div class="shadow-lg bg-red-vibrant border-l-8 hover:bg-red-vibrant-dark border-red-vibrant-dark mb-2 p-2 md:w-1/4 mx-2">
-                <div class="p-4 flex flex-col">
-                    <a href="#" class="no-underline text-white text-2xl">
-                        $244
-                    </a>
-                    <a  class="no-underline text-white text-lg">
-                        Total Sales
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- /Stats Row Ends Here -->
-
-        <!-- Card Sextion Starts Here -->
-        <div class="flex flex-1 flex-col md:flex-row lg:flex-row mx-2">
-
-            <!-- card -->
-
-            <div class="rounded overflow-hidden shadow bg-white mx-2 w-full">
-                <div class="px-6 py-2 border-b border-light-grey">
-                    <div class="font-bold text-xl">Employees Section</div>
-                </div>
-                <div class="table-responsive">
-                    <table class="table text-grey-darkest">
-                        <thead class="bg-grey-dark text-white text-normal">
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Department</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+  <div class="p-6 min-h-screen">
+    <div class="mb-6">
+      <h2 class="text-3xl font-semibold text-gray-800">Dashboard Overview</h2>
+      <p class="text-gray-500">Analytics & summary of system data</p>
     </div>
-</main>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="bg-white shadow rounded-lg p-5">
+        <h3 class="text-sm text-gray-500">Total Sales</h3>
+        <p class="text-2xl font-bold text-gray-800 mt-2">Rs. 320,000</p>
+      </div>
+      <div class="bg-white shadow rounded-lg p-5">
+        <h3 class="text-sm text-gray-500">Employees</h3>
+        <p class="text-2xl font-bold text-gray-800 mt-2">1,200</p>
+      </div>
+      <div class="bg-white shadow rounded-lg p-5">
+        <h3 class="text-sm text-gray-500">New Orders</h3>
+        <p class="text-2xl font-bold text-gray-800 mt-2">75</p>
+      </div>
+      <div class="bg-white shadow rounded-lg p-5">
+        <h3 class="text-sm text-gray-500">Pending Issues</h3>
+        <p class="text-2xl font-bold text-gray-800 mt-2">4</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h4 class="text-lg font-semibold text-gray-700 mb-4">Sales Trend</h4>
+        <div class="h-64">
+          <canvas id="salesChart"></canvas>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-lg shadow">
+        <h4 class="text-lg font-semibold text-gray-700 mb-4">Order Distribution</h4>
+        <div class="h-64">
+          <canvas id="ordersChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // Sales Trend Chart (Line chart)
+      const salesCtx = document.getElementById('salesChart').getContext('2d');
+      new Chart(salesCtx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'], // Static months
+          datasets: [{
+            label: 'Sales (Rs.)',
+            data: [12000, 19000, 3000, 5000, 20000], // Static sales data
+            borderColor: '#3b82f6', // Line color
+            backgroundColor: 'rgba(59,130,246,0.1)', // Fill color
+            fill: true,
+            tension: 0.4,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return `Rs. ${context.raw}`; // Format tooltip
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // Order Distribution Chart (Doughnut chart)
+      const ordersCtx = document.getElementById('ordersChart').getContext('2d');
+      new Chart(ordersCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Completed', 'Pending', 'Cancelled'],
+          datasets: [{
+            label: 'Order Status',
+            data: [60, 25, 15], // Static data
+            backgroundColor: ['#10b981', '#f59e0b', '#ef4444'], // Colors for each slice
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return `${context.label}: ${context.raw}%`; // Format tooltip
+                }
+              }
+            }
+          }
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
